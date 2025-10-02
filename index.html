@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0ea5e9" />
+    <link rel="manifest" href="quinejo.webmanifest" />
+    <link rel="icon" href="android/android-launchericon-192-192.png" />
+
+    <title>PWA Sencilla</title>
+
+    <style>
+      body {
+        font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        line-height: 1.4;
+      }
+      main {
+        max-width: 680px;
+        margin: auto;
+      }
+      button {
+        padding: 0.7rem 1rem;
+        border: 0;
+        border-radius: 0.7rem;
+        cursor: pointer;
+      }
+      #install {
+        display: none;
+        background: #0ea5e9;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>✅ El quinejo de la mancha</h1>
+      <img src="cover.png" alt="">
+      <p>Esta app se puede instalar y funciona sin conexión.</p>
+      <button id="install">Instalar</button>
+    </main>
+    <script src="./regist_serviceWorker.js"></script>
+  </body>
+</html>

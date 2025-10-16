@@ -3,22 +3,28 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("./service-worker.js")
       .then((registration) => {
-        console.log("ServiceWorker registrado con scope:", registration.scope);
+        console.log("SW registrado:", registration.scope);
 
-        registration.addEventListener("updatefound", () => {
+        registration.onupdatefound = () => {
           const newWorker = registration.installing;
-          newWorker.addEventListener("statechange", () => {
+          newWorker.onstatechange = () => {
             if (
               newWorker.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              console.log("Nueva versión disponible. Recargando...");
-              newWorker.postMessage("skipWaiting");
-              window.location.reload();
+              console.log("Nueva versión disponible. Activando...");
+              newWorker.postMessage({ action: "skipWaiting" });
             }
-          });
-        });
+          };
+        };
       })
-      .catch((err) => console.log("Error registrando SW:", err));
+      .catch((err) => console.error("Error registrando SW:", err));
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (refreshing) return;
+      refreshing = true;
+      window.location.reload();
+    });
   });
 }

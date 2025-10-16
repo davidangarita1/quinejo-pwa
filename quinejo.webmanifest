@@ -568,5 +568,15 @@
       "sizes": "1024x1024",
       "type": "image/png"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "content",
+      "url": "url"
+    }
+  }
 }

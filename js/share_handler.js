@@ -6,7 +6,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const data = await response.json();
     await cache.delete("/shared-data");
 
-    showSharedContent(data);
+    mostrarContenidoCompartido(data);
     return;
   }
 
@@ -16,18 +16,19 @@ window.addEventListener("DOMContentLoaded", async () => {
   const url = params.get("url");
 
   if (title || content || url) {
-    showSharedContent({ title, content, url });
+    mostrarContenidoCompartido({ title, content, url });
   }
 });
 
-function showSharedContent(data) {
+function mostrarContenidoCompartido(data) {
   const { title, content, url, files } = data;
 
   let html = `<h2>Contenido compartido</h2>`;
 
   if (title) html += `<p><strong>Título:</strong> ${title}</p>`;
   if (content) html += `<p><strong>Texto:</strong> ${content}</p>`;
-  if (url) html += `<p><strong>URL:</strong> <a href="${url}" target="_blank">${url}</a></p>`;
+  if (url)
+    html += `<p><strong>URL:</strong> <a href="${url}" target="_blank">${url}</a></p>`;
 
   if (files && files.length > 0) {
     html += `<div id="sharedImages">`;

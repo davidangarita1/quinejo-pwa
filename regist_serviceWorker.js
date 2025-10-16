@@ -14,7 +14,7 @@ if ("serviceWorker" in navigator) {
             ) {
               console.log("Nueva versión disponible. Recargando...");
               newWorker.postMessage("skipWaiting");
-              window.location.reload(); // 🔄 recarga automática
+              window.location.reload();
             }
           });
         });

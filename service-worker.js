@@ -10,11 +10,13 @@ self.addEventListener("install", (e) => {
       .catch((err) => console.log("Falló registro de cache", err))
   );
 });
+
 self.addEventListener("message", (event) => {
   if (event.data === "skipWaiting") {
     self.skipWaiting();
   }
 });
+
 self.addEventListener("activate", (e) => {
   const cacheWhitelist = [CACHE_NAME];
   e.waitUntil(
@@ -33,13 +35,6 @@ self.addEventListener("activate", (e) => {
   );
 });
 self.addEventListener("fetch", (e) => {
-  const url = new URL(e.request.url);
-
-  if (url.pathname === "/share-target" && e.request.method === "POST") {
-    e.respondWith(handleShareTarget(e.request));
-    return;
-  }
-
   e.respondWith(
     caches.match(e.request).then((res) => {
       if (res) {
@@ -49,36 +44,3 @@ self.addEventListener("fetch", (e) => {
     })
   );
 });
-
-async function handleShareTarget(request) {
-  const formData = await request.formData();
-  const title = formData.get("title");
-  const content = formData.get("content");
-  const url = formData.get("url");
-  const mediaFiles = formData.getAll("media");
-
-  const sharedData = {
-    title: title || "",
-    content: content || "",
-    url: url || "",
-    files: [],
-  };
-
-  for (const file of mediaFiles) {
-    if (file && file.size > 0) {
-      const blob = new Blob([await file.arrayBuffer()], { type: file.type });
-      const blobUrl = URL.createObjectURL(blob);
-      sharedData.files.push(blobUrl);
-    }
-  }
-
-  const cache = await caches.open("shared-data");
-  await cache.put(
-    "/shared-data",
-    new Response(JSON.stringify(sharedData), {
-      headers: { "Content-Type": "application/json" },
-    })
-  );
-
-  return Response.redirect("/", 303);
-}

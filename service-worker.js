@@ -10,6 +10,11 @@ self.addEventListener("install", (e) => {
       .catch((err) => console.log("Falló registro de cache", err))
   );
 });
+self.addEventListener("message", (event) => {
+  if (event.data === "skipWaiting") {
+    self.skipWaiting();
+  }
+});
 self.addEventListener("activate", (e) => {
   const cacheWhitelist = [CACHE_NAME];
   e.waitUntil(

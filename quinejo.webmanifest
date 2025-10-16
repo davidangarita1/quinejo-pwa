@@ -570,13 +570,19 @@
     }
   ],
   "share_target": {
-    "action": "/",
+    "action": "/share-target",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
       "title": "title",
       "text": "content",
-      "url": "url"
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": ["image/*", "video/*"]
+        }
+      ]
     }
   }
 }

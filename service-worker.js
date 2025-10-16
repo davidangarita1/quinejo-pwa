@@ -1,5 +1,6 @@
 const CACHE_NAME = "xamplepwa",
   urlsToCache = [".", "./index.html"];
+
 self.addEventListener("install", (e) => {
   e.waitUntil(
     caches
@@ -37,9 +38,7 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   e.respondWith(
     caches.match(e.request).then((res) => {
-      if (res) {
-        return res;
-      }
+      if (res) return res;
       return fetch(e.request);
     })
   );

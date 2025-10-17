@@ -1,30 +1,62 @@
-const CACHE_NAME = "quinejo-v1";
-const urlsToCache = ["/", "/index.html", "/share.html", "/assets/icon.png"];
+const CACHE_NAME = "image-share-pwa-cache-v1";
+const PRECACHE_URLS = [
+  "/",
+  "/index.html",
+  "/manifest.json",
+  "/app.js",
+  "/service-worker.js",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
+self.addEventListener("install", (event) => {
   self.skipWaiting();
-});
-
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches
-      .keys()
-      .then((names) =>
-        Promise.all(names.map((n) => n !== CACHE_NAME && caches.delete(n)))
-      )
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS))
   );
-  self.clients.claim();
 });
 
-self.addEventListener("fetch", (e) => {
-  e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((key) => key !== CACHE_NAME)
+          .map((key) => caches.delete(key))
+      );
+      await self.clients.claim();
+    })()
+  );
 });
 
-self.addEventListener("message", (event) => {
-  if (event.data && event.data.action === "skipWaiting") {
-    self.skipWaiting();
+async function handleShare(event) {
+  const formData = await event.request.formData();
+  const photos = formData.getAll("photos") || [];
+  const title = formData.get("title") || "";
+  const text = formData.get("text") || "";
+  const urlValue = formData.get("url") || "";
+  const clientsList = await self.clients.matchAll({
+    type: "window",
+    includeUncontrolled: true,
+  });
+  for (const client of clientsList) {
+    client.postMessage({ photos, title, text, url: urlValue });
   }
+  return Response.redirect("/", 303);
+}
+
+self.addEventListener("fetch", (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+  if (request.method === "POST" && url.pathname === "/share") {
+    event.respondWith(handleShare(event));
+    return;
+  }
+  if (request.method !== "GET") {
+    return;
+  }
+  event.respondWith(
+    caches.match(request).then((response) => response || fetch(request))
+  );
 });

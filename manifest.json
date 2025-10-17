@@ -1,20 +1,20 @@
 {
   "name": "El quinejo de la Mancha",
   "short_name": "quinejo",
-  "theme_color": "#0ea5e9",
-  "background_color": "#ffffff",
-  "display": "standalone",
-  "orientation": "portrait",
-  "scope": "/",
+  "description": "A progressive web app to display images shared from other applications.",
   "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4A90E2",
   "icons": [
     {
-      "src": "assets/icon.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "assets/icon-512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
@@ -26,9 +26,10 @@
     "params": {
       "title": "title",
       "text": "text",
+      "url": "url",
       "files": [
         {
-          "name": "image",
+          "name": "photos",
           "accept": ["image/*"]
         }
       ]

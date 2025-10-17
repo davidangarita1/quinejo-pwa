@@ -1,45 +1,21 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="manifest" href="/quinejo.webmanifest" />
-    <meta name="theme-color" content="#0ea5e9" />
-    <link rel="icon" href="/assets/icon.png" />
-
     <title>PWA Sencilla</title>
-
-    <style>
-      body {
-        font-family: system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-        margin: 0;
-        padding: 2rem;
-        line-height: 1.4;
-      }
-      main {
-        max-width: 680px;
-        margin: auto;
-      }
-      button {
-        padding: 0.7rem 1rem;
-        border: 0;
-        border-radius: 0.7rem;
-        cursor: pointer;
-      }
-      #install {
-        display: none;
-        background: #0ea5e9;
-        color: white;
-      }
-    </style>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#4A90E2" />
+    <link rel="icon" type="image/png" href="/icons/icon-192.png" />
   </head>
   <body>
-    <main>
-      <h1>✅ El quinejo de la mancha</h1>
-      <img src="assets/cover.png" alt="" />
-      <p>Esta app se puede instalar y funciona sin conexión.</p>
-      <button id="install">Instalar</button>
+    <h1>El quinejo de la mancha</h1>
+    <img src="/icons/icon-source.png" alt="" />
+    <p>This progressive web app displays images shared from other apps.</p>
+    <main id="content">
+      <p id="status">No shared images received.</p>
+      <div id="images" style="display: flex; flex-wrap: wrap"></div>
     </main>
-    <script src="/regist_serviceWorker.js"></script>
+    <script src="/app.js"></script>
   </body>
 </html>

@@ -57,15 +57,44 @@ async function handleShare(event) {
 }
 
 self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-  if (event.request.method === "POST" && url.pathname === "/share") {
-    event.respondWith(
+  const { request } = event;
+  const url = new URL(request.url);
+
+  if (request.method === "POST" && url.pathname === "/share") {
+    event.respondWith(Response.redirect("/"));
+    event.waitUntil(
       (async () => {
         const formData = await event.request.formData();
-        const link = formData.get("url") || "";
-        const responseUrl = await saveBookmark(link);
-        return Response.redirect(responseUrl, 303);
+        const photos = formData.getAll("photos") || [];
+        const title = formData.get("title") || "";
+        const text = formData.get("text") || "";
+        const urlValue = formData.get("url") || "";
+
+        const clientId = event.resultingClientId || event.clientId;
+        if (clientId) {
+          const client = await self.clients.get(clientId);
+          if (client) {
+            client.postMessage({ photos, title, text, url: urlValue });
+            return;
+          }
+        }
+
+        const clientsList = await self.clients.matchAll({
+          type: "window",
+          includeUncontrolled: true,
+        });
+        if (clientsList.length > 0) {
+          clientsList[0].postMessage({ photos, title, text, url: urlValue });
+        }
       })()
+    );
+
+    return;
+  }
+
+  if (request.method === "GET") {
+    event.respondWith(
+      caches.match(request).then((response) => response || fetch(request))
     );
   }
 });

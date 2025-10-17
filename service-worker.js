@@ -36,13 +36,23 @@ async function handleShare(event) {
   const title = formData.get("title") || "";
   const text = formData.get("text") || "";
   const urlValue = formData.get("url") || "";
-  const clientsList = await self.clients.matchAll({
-    type: "window",
-    includeUncontrolled: true,
-  });
-  for (const client of clientsList) {
-    client.postMessage({ photos, title, text, url: urlValue });
+
+  const clientId = event.resultingClientId || event.clientId;
+  if (clientId) {
+    const client = await self.clients.get(clientId);
+    if (client) {
+      client.postMessage({ photos, title, text, url: urlValue });
+    }
+  } else {
+    const clientsList = await self.clients.matchAll({
+      type: "window",
+      includeUncontrolled: true,
+    });
+    if (clientsList.length > 0) {
+      clientsList[0].postMessage({ photos, title, text, url: urlValue });
+    }
   }
+
   return Response.redirect("/", 303);
 }
 

@@ -57,16 +57,15 @@ async function handleShare(event) {
 }
 
 self.addEventListener("fetch", (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-  if (request.method === "POST" && url.pathname === "/share") {
-    event.respondWith(handleShare(event));
-    return;
+  const url = new URL(event.request.url);
+  if (event.request.method === "POST" && url.pathname === "/share") {
+    event.respondWith(
+      (async () => {
+        const formData = await event.request.formData();
+        const link = formData.get("url") || "";
+        const responseUrl = await saveBookmark(link);
+        return Response.redirect(responseUrl, 303);
+      })()
+    );
   }
-  if (request.method !== "GET") {
-    return;
-  }
-  event.respondWith(
-    caches.match(request).then((response) => response || fetch(request))
-  );
 });
